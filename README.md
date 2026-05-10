@@ -1,3 +1,28 @@
+# Fortune Character Generator
+
+A Next.js application that transforms your character images into mystical Tarot cards using the Gemini API and Imagen 3.
+
+## Setup
+
+1. **API Key**: Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/).
+2. **Environment Variables**: Create or update `.env` file with your key:
+   ```env
+   GEMINI_API_KEY=your_key_here
+   GEMINI_MODEL=gemini-1.5-flash
+   IMAGEN_MODEL=imagen-3.0-generate-001
+   ```
+3. **Run**: 
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+## Features
+
+- **Character Analysis**: Uses Gemini Vision to describe your uploaded character.
+- **Consistent Style**: Enforces a traditional woodcut/engraved tarot style as shown in the example.
+- **Full Major Arcana**: Choose from all 22 Major Arcana cards.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
