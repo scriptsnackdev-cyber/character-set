@@ -16,18 +16,9 @@ export default function Navbar({ stepsDone }: NavbarProps) {
 
   return (
     <nav className="navbar">
-      {/* Brand */}
+      {/* Consolidated Menu Button */}
       <div className="navbar__brand">
-        <div className="flex items-center gap-4">
-          <a href="/" className="flex items-center gap-2 group">
-            <div className="navbar__logo group-hover:scale-110 transition-transform">
-              <Star size={14} strokeWidth={2.5} color="#08070c" fill="#08070c" />
-            </div>
-            <span className="navbar__title">PurrPaw Tarot</span>
-          </a>
-          <div className="h-4 w-[1px] bg-white/10" />
-          <NavMenu />
-        </div>
+        <NavMenu />
       </div>
 
       {/* Progress */}

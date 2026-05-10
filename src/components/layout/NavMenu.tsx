@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Sparkles, User, Cat, Calendar, Brain, Heart, MessageSquare, Image, Zap, Layout, Star, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { logout } from '@/app/actions/auth';
 
 const MENU_ITEMS = [
@@ -36,26 +37,31 @@ export default function NavMenu() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  // Find current active item
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-  const activeItem = MENU_ITEMS.find(item => item.href === currentPath) || MENU_ITEMS[0];
+  // Use usePathname to avoid hydration mismatch
+  const pathname = usePathname();
+  const activeItem = MENU_ITEMS.find(item => item.href === pathname) || MENU_ITEMS[0];
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group active:scale-95"
+        className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group active:scale-95 shadow-lg shadow-black/20"
       >
-        <div 
-          className="w-2 h-2 rounded-full animate-pulse" 
-          style={{ backgroundColor: activeItem.color, boxShadow: `0 0 8px ${activeItem.color}` }} 
-        />
-        <span className="text-[11px] font-bold text-white/80 uppercase tracking-wider">
-          {activeItem.name}
-        </span>
+        {/* Brand Logo in Button */}
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-tr from-[#ff8eb3] to-[#c78bf5] group-hover:scale-110 transition-transform">
+          <Star size={14} strokeWidth={2.5} color="#08070c" fill="#08070c" />
+        </div>
+        
+        <div className="flex flex-col items-start leading-tight">
+          <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">PurrPaw</span>
+          <span className="text-xs font-bold text-white tracking-wide">
+            {activeItem.name}
+          </span>
+        </div>
+
         <ChevronDown 
-          size={14} 
-          className={`text-white/40 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+          size={16} 
+          className={`text-white/40 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
         />
       </button>
 
@@ -66,7 +72,7 @@ export default function NavMenu() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-full left-0 mt-2 w-64 p-2 rounded-2xl bg-[#0e0d15]/95 backdrop-blur-xl border border-white/10 shadow-2xl z-50 overflow-hidden"
+            className="absolute top-full left-0 mt-2 w-64 p-2 rounded-2xl bg-[#0e0d15]/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[999] overflow-hidden"
           >
             <div className="grid grid-cols-1 gap-1 max-h-[70vh] overflow-y-auto custom-scrollbar">
               {MENU_ITEMS.map((item) => (
@@ -75,7 +81,7 @@ export default function NavMenu() {
                   href={item.href}
                   className={`
                     flex items-center gap-3 p-2.5 rounded-xl transition-all group
-                    ${currentPath === item.href ? 'bg-white/10' : 'hover:bg-white/5'}
+                    ${pathname === item.href ? 'bg-white/10' : 'hover:bg-white/5'}
                   `}
                 >
                   <div 
@@ -85,10 +91,10 @@ export default function NavMenu() {
                     <item.icon size={16} />
                   </div>
                   <div className="flex flex-col">
-                    <span className={`text-xs font-bold ${currentPath === item.href ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>
+                    <span className={`text-xs font-bold ${pathname === item.href ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>
                       {item.name}
                     </span>
-                    {currentPath === item.href && (
+                    {pathname === item.href && (
                       <span className="text-[9px] text-white/30 uppercase tracking-widest font-medium">Current Page</span>
                     )}
                   </div>
