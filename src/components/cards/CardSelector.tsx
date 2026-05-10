@@ -4,6 +4,7 @@ import React from 'react';
 import { Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StepLabel from '../ui/StepLabel';
+import Select from '../ui/Select';
 import {
   MAJOR_ARCANA, MINOR_ARCANA_SUITS, TAROT_CARDS,
   CARD_SYMBOLS, ROMAN, getCardSymbol, SPECIAL_CARDS
@@ -38,49 +39,40 @@ export default function CardSelector({
       <StepLabel step={3} label="Choose Arcana" done={selectedCards.length > 0} count={selectedCards.length} />
 
       <div className="card-selector">
-        {/* ── Tabs ── */}
-        <div className="card-selector__tabs">
-          {(['Major', 'Minor', 'Special'] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => onTabChange(tab)}
-              className={`card-selector__tab ${activeTab === tab ? 'card-selector__tab--active' : ''}`}
-            >
-              {tab}
-              {activeTab === tab && (
-                <motion.div
-                  layoutId="arcana-tab"
-                  className="card-selector__tab-indicator"
-                  transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
+        {/* ── Arcana & Suit Dropdowns ── */}
+        <div className="p-4 space-y-4 border-bottom border-white/5">
+          <Select
+            label="Arcana Category"
+            value={activeTab}
+            onChange={(val) => onTabChange(val as any)}
+            options={[
+              { id: 'Major', label: 'Major Arcana' },
+              { id: 'Minor', label: 'Minor Arcana' },
+              { id: 'Special', label: 'Special Cards' },
+            ]}
+          />
 
-        {/* ── Suit sub-filter ── */}
-        <AnimatePresence>
-          {activeTab === 'Minor' && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="card-selector__suits-wrap"
-            >
-              <div className="card-selector__suits">
-                {MINOR_ARCANA_SUITS.map(suit => (
-                  <button
-                    key={suit}
-                    onClick={() => onSuitChange(suit)}
-                    className={`card-selector__suit ${activeSuit === suit ? 'card-selector__suit--active' : ''}`}
-                  >
-                    {CARD_SYMBOLS[suit]} {suit}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <AnimatePresence>
+            {activeTab === 'Minor' && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+              >
+                <Select
+                  label="Minor Suit"
+                  value={activeSuit}
+                  onChange={onSuitChange}
+                  options={MINOR_ARCANA_SUITS.map(suit => ({
+                    id: suit,
+                    label: suit,
+                    icon: <span>{CARD_SYMBOLS[suit]}</span>
+                  }))}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* ── Card grid ── */}
         <div className="card-selector__grid-wrap">
