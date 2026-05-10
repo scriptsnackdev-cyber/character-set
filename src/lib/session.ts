@@ -37,7 +37,7 @@ export async function createSession(userId: string) {
 
   cookieStore.set('session', session, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Changed to false to allow HTTP access on VPS IP
     expires: expiresAt,
     sameSite: 'lax',
     path: '/',
@@ -57,7 +57,7 @@ export async function updateSession() {
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Changed to false to allow HTTP access on VPS IP
     expires: expires,
     sameSite: 'lax',
     path: '/',
