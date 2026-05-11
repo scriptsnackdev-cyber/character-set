@@ -35,7 +35,7 @@ export default function ChibiTalkGenerator() {
         body: JSON.stringify({
           images,
           characterName,
-          talkText: talkText.trim() || 'Hello!',
+          talkText: talkText.trim(),
           theme: theme.trim()
         }),
       });

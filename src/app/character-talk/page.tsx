@@ -14,7 +14,7 @@ import SimpleCard from '@/components/results/SimpleCard';
 import { CardResult } from '@/lib/tarot-data';
 
 export default function CharacterTalkGenerator() {
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const [characterName, setCharacterName] = useState('');
   const [talkText, setTalkText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -22,7 +22,7 @@ export default function CharacterTalkGenerator() {
   const [error, setError] = useState<string | null>(null);
 
   const generateCharacterTalk = async () => {
-    if (!image) return;
+    if (images.length === 0) return;
     setIsGenerating(true);
     setError(null);
     setResult({ loading: true });
@@ -32,9 +32,9 @@ export default function CharacterTalkGenerator() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          image,
+          images,
           characterName,
-          talkText: talkText.trim() || 'Hello!'
+          talkText: talkText.trim()
         }),
       });
       
@@ -50,8 +50,8 @@ export default function CharacterTalkGenerator() {
     }
   };
 
-  const canGenerate = !!image && !isGenerating;
-  const stepsDone = [!!image, talkText.trim().length > 0, !!result?.url];
+  const canGenerate = images.length > 0 && !isGenerating;
+  const stepsDone = [images.length > 0, talkText.trim().length > 0, !!result?.url];
 
   return (
     <div className="app-shell">
@@ -85,13 +85,26 @@ export default function CharacterTalkGenerator() {
           <div className="sidebar-panel">
             <div className="mb-4">
               <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 mb-3 ml-1 block">
-                Upload Character
+                Upload Characters (Max 3)
               </label>
-              <ImageUploader
-                image={image}
-                onUpload={setImage}
-                onRemove={() => setImage(null)}
-              />
+              <div className="grid grid-cols-1 gap-4">
+                {[0, 1, 2].map((idx) => (
+                  <div key={idx} className={idx > 0 && images.length < idx ? 'opacity-30 pointer-events-none' : ''}>
+                    <ImageUploader
+                      image={images[idx] || null}
+                      onUpload={(url) => {
+                        const newImages = [...images];
+                        newImages[idx] = url;
+                        setImages(newImages.filter(Boolean));
+                      }}
+                      onRemove={() => {
+                        const newImages = images.filter((_, i) => i !== idx);
+                        setImages(newImages);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
             <CharacterNameInput
@@ -120,7 +133,7 @@ export default function CharacterTalkGenerator() {
               <GenerateButton
                 canGenerate={canGenerate}
                 isGenerating={isGenerating}
-                hasImage={!!image}
+                hasImage={images.length > 0}
                 hasCards={true}
                 onGenerate={generateCharacterTalk}
                 accentColor="#a855f7"
@@ -161,7 +174,7 @@ export default function CharacterTalkGenerator() {
                       <MessageSquare size={24} className="text-purple-400" />
                     </div>
                     <p className="results-empty__title">รอกระซิบคำพูด...</p>
-                    <p className="results-empty__subtitle">อัปโหลดรูปตัวละครและพิมพ์ข้อความ เพื่อเริ่มการเนรมิต</p>
+                    <p className="results-empty__subtitle">อัปโหลดรูปตัวละคร (สูงสุด 3 รูป) และพิมพ์ข้อความ เพื่อเริ่มการเนรมิต</p>
                   </div>
                 )}
               </div>

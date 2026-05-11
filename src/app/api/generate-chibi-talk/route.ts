@@ -33,12 +33,12 @@ export async function POST(req: Request) {
       - Style: Modern Japanese Chibi anime style.
       - Rendering: Soft dreamy gradients, clean lineart, professional illustration.
       
-      Sticker-Style Text (CRITICAL):
-      - Render the following text directly on the image as part of the illustration: "${talkText || 'Hello!'}"
+      ${talkText ? `Sticker-Style Text (CRITICAL):
+      - Render the following text directly on the image as part of the illustration: "${talkText}"
       - TEXT STYLE: The text MUST have a VERY thick, clean white outline (stroke) and a bright red inner fill color. 
       - FONT STYLE: Use a bold, cute, rounded "pop" anime-style font (similar to a YouTube thumbnail or a premium LINE sticker).
       - NO BOX: Do NOT use any speech bubble, dialogue box, or background container. The text must be rendered directly on top of the character/background.
-      - POSITION: Position the text in a stylish, legible way at the bottom or near the main character.
+      - POSITION: Position the text in a stylish, legible way at the bottom or near the main character.` : ''}
       
       Quality: Masterpiece, ultra-detailed.
       Vertical portrait layout.

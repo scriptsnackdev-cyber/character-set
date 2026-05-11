@@ -9,26 +9,29 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { image, characterName, talkText } = await req.json();
+    const { image, images, characterName, talkText } = await req.json();
 
-    if (!image) {
-      return Response.json({ error: 'Please upload a character image' }, { status: 400 });
+    const imageList = images || (image ? [image] : []);
+
+    if (imageList.length === 0) {
+      return Response.json({ error: 'Please upload at least one character image' }, { status: 400 });
     }
 
     const prompt = `
-      This is a character illustration. Please generate a high-quality illustration that features THIS EXACT character from the attached image.
+      This is a character illustration task. Please generate a high-quality illustration that features the EXACT character(s) from the attached ${imageList.length > 1 ? 'images' : 'image'}.
       
       Character & Scene Preservation:
-      - Maintain the EXACT design, hair, outfit, facial features, and BACKGROUND of the image provided. 
-      - Do NOT change the style. The output should look like the original image but with the added element below.
+      - Maintain the EXACT design, hair, outfit, facial features, and BACKGROUND of the character(s) provided in the ${imageList.length > 1 ? 'photos' : 'photo'}. 
+      - Do NOT change the artistic style. The output should look like a professional recreation of the original but with the elements below.
+      ${imageList.length > 1 ? '- If there are multiple images, arrange the characters together in a single cohesive scene while keeping their individual likenesses perfect.' : ''}
       
-      Speech Bubble Feature:
-      - Add a cute anime-style speech bubble (dialogue box) pointing to the character.
-      - Inside the speech bubble, CLEARLY render the following text: "${talkText || 'Hello!'}"
-      - The text MUST be perfectly legible and match the aesthetic of the character.
+      ${talkText ? `Speech Bubble Feature:
+      - Add a cute anime-style speech bubble (dialogue box) pointing to the main character.
+      - Inside the speech bubble, CLEARLY render the following text: "${talkText}"
+      - The text MUST be perfectly legible and match the aesthetic of the illustration.` : ''}
       
       Quality: Masterpiece, ultra-detailed, professional rendering.
-      Layout: Maintain the original layout.
+      Layout: Maintain the original aspect ratio and layout style.
       
       Absolutely NO borders and NO frames.
     `;
@@ -37,15 +40,15 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: imagenModelName });
     
     // Prepare multi-modal content
-    const contentParts: any[] = [
-      prompt,
-      {
+    const contentParts: any[] = [prompt];
+    imageList.forEach((imgBase64: string) => {
+      contentParts.push({
         inlineData: {
-          data: image.split(',')[1],
+          data: imgBase64.split(',')[1],
           mimeType: "image/jpeg"
         }
-      }
-    ];
+      });
+    });
 
     let result;
     for (let attempt = 1; attempt <= 2; attempt++) {
