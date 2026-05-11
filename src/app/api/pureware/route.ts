@@ -26,8 +26,8 @@ export async function POST(req: Request) {
       OUTFIT ADAPTATION RULES (IMPORTANT):
       - DO NOT force the rigid shape or silhouette from the OUTFIT REFERENCE onto the character.
       - DYNAMIC DRAPING: The clothing must drape, fold, and wrinkle NATURALLY according to the character's specific pose and body shape in the BASE IMAGE.
-      - LOGOS & DETAILS: Faithfully transfer key details like the "KMITL" text on the pocket and the gear necklace, but ensure they follow the curves and folds of the fabric as it sits on the character's body.
-      - TEXTURE & FABRIC: Match the material (e.g., cotton, silk, denim) and lighting of the outfit to the environment of the BASE IMAGE.
+      - LOGOS & DETAILS: Faithfully transfer all logos, text, patterns, and specific accessories visible in the OUTFIT REFERENCE, ensuring they follow the curves and folds of the fabric as it sits on the character's body.
+      - TEXTURE & FABRIC: Match the material (e.g., cotton, silk, denim, etc.) and lighting of the outfit to the environment of the BASE IMAGE.
       
       ADDITIONAL REQUESTS: ${additionalRequests || 'None.'}
       
@@ -37,19 +37,24 @@ export async function POST(req: Request) {
     const imagenModelName = process.env.IMAGEN_MODEL || "gemini-3.1-flash-image-preview";
     const model = genAI.getGenerativeModel({ model: imagenModelName });
     
+    const getMimeType = (base64: string) => {
+      const match = base64.match(/^data:(image\/[a-zA-Z+]+);base64,/);
+      return match ? match[1] : 'image/jpeg';
+    };
+
     // Prepare multi-modal content
     const contentParts: any[] = [
       prompt,
       {
         inlineData: {
           data: characterImage.split(',')[1],
-          mimeType: "image/jpeg"
+          mimeType: getMimeType(characterImage)
         }
       },
       {
         inlineData: {
           data: outfitImage.split(',')[1],
-          mimeType: "image/jpeg"
+          mimeType: getMimeType(outfitImage)
         }
       }
     ];
