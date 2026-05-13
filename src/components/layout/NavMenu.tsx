@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Sparkles, User, Cat, Calendar, Brain, Heart, MessageSquare, Image, Zap, Layout, Star, LogOut } from 'lucide-react';
+import { ChevronDown, Sparkles, User, Cat, Calendar, Brain, Heart, MessageSquare, Image, Zap, Layout, Star, LogOut, Shirt, Wand2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { logout } from '@/app/actions/auth';
@@ -18,6 +18,8 @@ const MENU_ITEMS = [
   { name: 'Character Talk', href: '/character-talk', icon: MessageSquare, color: '#10b981' },
   { name: 'Meme Generator', href: '/chibi-meme', icon: Image, color: '#f87171' },
   { name: 'PureWare', href: '/pureware', icon: Layout, color: '#6366f1' },
+  { name: 'Outfit Extract', href: '/outfit-extract', icon: Shirt, color: '#10b981' },
+  { name: 'Image Edit', href: '/image-edit', icon: Wand2, color: '#a855f7' },
   { name: 'Character+', href: '/character-plus', icon: User, color: '#a855f7' },
   { name: 'Profile Show', href: '/profile-show', icon: User, color: '#3b82f6' },
 ];
